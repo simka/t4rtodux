@@ -1,20 +1,40 @@
-import { Comment } from "./ui/comment"
-import { db } from "./db/db";
-import { AddNewComment } from "./ui/add-new-comment";
 import { useEffect, useState } from "react";
 
+import { AddNewComment } from "./ui/add-new-comment";
+import { Comment } from "./ui/comment";
+import { db } from "./db/db";
+import { sortCommentsRecursively } from "./utils";
+import type { Comment as CommentType } from "./types";
+
+
 export function App() {
-  const [comments, setComments] = useState([]);
+  const [comments, setComments] = useState<CommentType[]>([]);
 
   useEffect(() => {
-    const subscription = db.comments.find().$.subscribe(docs => {
-      setComments(docs.map(doc => doc.toJSON()))
+    const subscription = db.comments.find().$.subscribe((docs) => {
+      const allComments = docs.map((doc) => doc.toJSON());
+
+      const map = {} as Record<string, CommentType>;;
+      allComments.forEach((comment) => {
+        map[comment.id] = { ...comment, children: [] };
+      });
+
+      const rootComments = [] as CommentType[];
+      allComments.forEach((comment) => {
+        if (comment.parentId && map[comment.parentId]) {
+          map[comment.parentId].children.push(map[comment.id]);
+        } else {
+          rootComments.push(map[comment.id]);
+        }
+      });
+
+      rootComments.forEach(sortCommentsRecursively);
+
+      setComments(rootComments);
     });
 
-    return () => {
-      subscription.unsubscribe()
-    }
-  }, [])
+    return () => subscription.unsubscribe();
+  }, []);
 
   async function handleDelete(id: string) {
     const doc = await db.comments.findOne({ selector: { id } }).exec();
@@ -25,13 +45,13 @@ export function App() {
 
   return (
     <main>
-      <h1>comments</h1>
+      <h1>Comments</h1>
       <ol>
-        {comments.map(comment => (
+        {comments.map((comment) => (
           <Comment key={comment.id} comment={comment} onDelete={handleDelete} />
         ))}
       </ol>
       <AddNewComment />
     </main>
-  )
+  );
 }

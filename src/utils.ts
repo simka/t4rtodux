@@ -1,15 +1,8 @@
-export function buildCommentTree(comments) {
-    const map = new Map();
-    comments.forEach(c => (map[c.id] = { ...c, children: [] }));
-    const roots = [];
+import type { Comment } from "./types";
 
-    comments.forEach(c => {
-        if (c.parentId) {
-            map[c.parentId]?.children.push(map[c.id]);
-        } else {
-            roots.push(map[c.id]);
-        }
-    });
-
-    return roots;
+export function sortCommentsRecursively(comment: Comment) {
+  comment.children.sort(
+    (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime(),
+  );
+  comment.children.forEach(sortCommentsRecursively);
 }
