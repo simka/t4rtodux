@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { AddNewComment } from "./ui/add-new-comment";
 import { Comment } from "./ui/comment";
 import { db } from "./db/db";
-import { sortCommentsRecursively } from "./utils";
+import { sortCommentsByDate, sortNestedCommentsRecursively } from "./utils";
 import type { Comment as CommentType } from "./types";
 
 
@@ -28,7 +28,8 @@ export function App() {
         }
       });
 
-      rootComments.forEach(sortCommentsRecursively);
+      rootComments.sort(sortCommentsByDate);
+      rootComments.forEach(sortNestedCommentsRecursively);
 
       setComments(rootComments);
     });
