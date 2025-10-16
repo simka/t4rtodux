@@ -5,3 +5,5 @@ this app has been bootstrapped with `vite` CLI, using `pnpm` 10.14.0 and `node` 
 1. `pnpm install`
 2. `pnpm run build`
 3. `pnpm run preview`
+
+ALternatively, you can look at the deployed version at https://amazing-gelato-713653.netlify.app/
