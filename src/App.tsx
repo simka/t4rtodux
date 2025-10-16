@@ -37,10 +37,24 @@ export function App() {
   }, []);
 
   async function handleDelete(id: string) {
-    const doc = await db.comments.findOne({ selector: { id } }).exec();
-    if (doc) {
-      await doc.remove();
+    async function deleteRecursively(commentId: string) {
+      const children = await db.comments
+        .find({ selector: { parentId: commentId } })
+        .exec();
+
+      for (const child of children) {
+        await deleteRecursively(child.id);
+      }
+
+      const doc = await db.comments
+        .findOne({ selector: { id: commentId } })
+        .exec();
+      if (doc) {
+        await doc.remove();
+      }
     }
+
+    await deleteRecursively(id);
   }
 
   return (
