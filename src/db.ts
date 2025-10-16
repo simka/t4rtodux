@@ -4,12 +4,9 @@ import {
   type RxJsonSchema,
   type RxCollection,
 } from "rxdb";
-import { addRxPlugin, createRxDatabase } from "rxdb/plugins/core";
-import { RxDBDevModePlugin } from "rxdb/plugins/dev-mode";
+import { createRxDatabase } from "rxdb/plugins/core";
 import { getRxStorageLocalstorage } from "rxdb/plugins/storage-localstorage";
 import { wrappedValidateAjvStorage } from "rxdb/plugins/validate-ajv";
-
-addRxPlugin(RxDBDevModePlugin);
 
 const commentSchemaLiteral = {
   version: 0,
