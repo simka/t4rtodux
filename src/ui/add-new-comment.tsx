@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { v4 as uuidv4 } from "uuid";
-import { db } from "../db/db";
+import { db } from "../db";
+import { Button } from "./button";
 
 interface AddNewCommentProps {
   parentId?: string;
@@ -15,7 +15,7 @@ export function AddNewComment({ parentId }: AddNewCommentProps) {
     const content = formData.get("content") as string;
 
     await db.comments.insert({
-      id: uuidv4(),
+      id: crypto.randomUUID(),
       content,
       parentId: parentId ?? null,
       timestamp: new Date().toISOString(),
@@ -27,15 +27,24 @@ export function AddNewComment({ parentId }: AddNewCommentProps) {
   if (showForm) {
     return (
       <form onSubmit={handleSubmit}>
-        <textarea placeholder="Add your comment" name="content" />
-        <button type="submit">Post</button>
+        <div className="flex flex-col space-y-2">
+          <textarea
+            autoFocus
+            placeholder="Add your comment"
+            name="content"
+            className="w-full rounded-xl border border-stone-300 bg-white p-3 text-stone-800 placeholder-stone-400 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1 focus:outline-none transition"
+          />
+          <Button type="submit" className="self-start">
+            Post
+          </Button>
+        </div>
       </form>
     );
   }
 
   return (
-    <button type="button" onClick={() => setShowForm(true)}>
+    <Button type="button" onClick={() => setShowForm(true)}>
       Reply
-    </button>
+    </Button>
   );
 }

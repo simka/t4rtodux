@@ -1,3 +1,3 @@
-import type { CommentDocType } from "./db/db";
+import type { CommentDocType } from "./db";
 
-export type Comment = CommentDocType & { children: Comment[] }
+export type Comment = CommentDocType & { children: Comment[] };

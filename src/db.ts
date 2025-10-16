@@ -3,7 +3,7 @@ import {
   type ExtractDocumentTypeFromTypedRxJsonSchema,
   type RxJsonSchema,
   type RxCollection,
-} from 'rxdb';
+} from "rxdb";
 import { addRxPlugin, createRxDatabase } from "rxdb/plugins/core";
 import { RxDBDevModePlugin } from "rxdb/plugins/dev-mode";
 import { getRxStorageLocalstorage } from "rxdb/plugins/storage-localstorage";
@@ -35,13 +35,15 @@ const commentSchemaLiteral = {
 } as const;
 
 const commentSchemaTyped = toTypedRxJsonSchema(commentSchemaLiteral);
-export type CommentDocType = ExtractDocumentTypeFromTypedRxJsonSchema<typeof commentSchemaTyped>;
+export type CommentDocType = ExtractDocumentTypeFromTypedRxJsonSchema<
+  typeof commentSchemaTyped
+>;
 const commentSchema: RxJsonSchema<CommentDocType> = commentSchemaLiteral;
 type CommentCollection = RxCollection<CommentDocType>;
 
 type DatabaseCollections = {
-  comments: CommentCollection
-}
+  comments: CommentCollection;
+};
 
 export const db = await createRxDatabase<DatabaseCollections>({
   name: "commentsdb",
@@ -49,7 +51,6 @@ export const db = await createRxDatabase<DatabaseCollections>({
     storage: getRxStorageLocalstorage(),
   }),
 });
-
 
 await db.addCollections({
   comments: {
